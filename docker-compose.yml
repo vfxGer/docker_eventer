@@ -1,0 +1,6 @@
+version: '2'
+services:
+  eventer:
+    build: .
+    volumes:
+     - /var/run/docker.sock:/var/run/docker.sock
