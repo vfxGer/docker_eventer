@@ -1,13 +1,14 @@
-Docker Event
-
+#Docker Event
+##The Problem
 I had a problem recently. I had a couple Docker containers on one machine 
 for a personal project which was a django web app called 
-[issueinfinity.com](https://www.issueinfinity.com) . 
+[issueinfinity.com](https://www.issueinfinity.com). 
 One of the containers, that was doing some image manipulation, kept 
 crashing and I did not know until I logged into the machine and looked at it
  using `docker ps`. So I wanted an e-mail notification if any of my 
- containers stopped or if anything happened to them.  I discovered a 
- command `docker events`.  This is a very handy command to see what has 
+ containers stopped or if anything happened to them. 
+##The Command
+I discovered a command `docker events`. This is a very handy command to see what has 
  happened to your docker containers.
  
 To see what has happened to your containers in the last hour you can run:
@@ -31,6 +32,7 @@ This will output any stop event on the test container. For more about the
 filters and more details on the other the arguments see the 
 [official docker docs](https://docs.docker.com/engine/reference/commandline/events)
 
+##The Python Script
 So now we have enough to create a Python script:
 ```python
 import sys
@@ -95,6 +97,7 @@ and parses the json to create a summary of the work.
 Although this works the subprocess adds overhead so to simplify the 
 solution we can just use the docker python api.
 
+##Using the Docker Python API
 Simply run `pip install docker`
 to install the python docker api.
 
@@ -146,7 +149,7 @@ The docker client is created from the environment with `docker.from_env`,
 which means it works like the command line would. 
 The client.events function works very similar to the command line version. 
 The `decode=True` means the output are python dictionaries.
-
+##I put Docker in your Docker
 Now I could put this python script into supervisord and run on the docker 
 machine but if we are using docker why not use docker. 
 To get this working in a docker container we need to install the docker 
