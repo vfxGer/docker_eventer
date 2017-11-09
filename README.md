@@ -149,7 +149,7 @@ The docker client is created from the environment with `docker.from_env`,
 which means it works like the command line would. 
 The client.events function works very similar to the command line version. 
 The `decode=True` means the output are python dictionaries.
-##I put Docker in your Docker
+##I Put Docker in your Docker
 Now I could put this python script into supervisord and run on the docker 
 machine but if we are using docker why not use docker. 
 To get this working in a docker container we need to install the docker 
