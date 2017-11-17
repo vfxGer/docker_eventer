@@ -158,8 +158,10 @@ machine but if we are using docker why not use docker.
 To get this working in a docker container we need to install the docker 
 client inside the container. The simplest way to do this is to run  
 `apt-get install docker.io` in the Dockerfile. 
+
 Then to make it work we need to mount the docker socket into the container 
 with `/var/run/docker.sock:/var/run/docker.sock`.
+
 You can see this in the docker-compose.yml file.
 
 And voila a docker event notifier. 
