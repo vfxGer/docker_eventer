@@ -1,41 +1,44 @@
-import sys
+#!/usr/bin/env python3
 import time
 from collections import Counter
-from pprint import pprint, pformat
+from pprint import pformat
 import datetime
 
-import arrow
-
-from notifier import notify
 import docker
+
+import notifier
+
+MAX_NOTIFY_TIME = 60
+
+
+def notify(events):
+    message = ""
+    message += "\n%d events\n" % len(events)
+    message += pformat(Counter(row['Action'] for row in events))
+    message += "\n"
+    message += pformat(events)
+    subject = "[DOCKER_EVNETS] %d docker events\n" % len(events)
+    print("Sending e-mail %s", subject)
+    notifier.notify(message, subject)
 
 
 def run():
     client = docker.from_env()
-    until = datetime.datetime.utcnow()
-    since = until - datetime.timedelta(hours=1)
-    event_data = []
-    for event in client.events(since=since, until=until, decode=True):
-        event_data.append(event)
-        event_data[-1]['human_time'] = arrow.get(event_data[-1]['time']).humanize()
-        pprint(event_data[-1])
-        print("-" * 5)
-    if event_data:
-        message = ""
-        message += "\n%d events\n" % len(event_data)
-        message += pformat(Counter(row['Action'] for row in event_data))
-        message += "\n"
-        message += pformat(event_data)
-        subject = "[ISSUEI] %d docker events\n" % len(event_data)
-        notify(message, subject)
-        print("e-mail sent")
+    while True:
+        for event in client.events(decode=True):
+            notify([event])
+            break
+        since = datetime.datetime.now()
+        # Do not want to bombard the e-mailer with messages so sleeping
+        print("Sleeping for %d seconds" % MAX_NOTIFY_TIME)
+        time.sleep(MAX_NOTIFY_TIME)
+        print("Woke")
+        until = datetime.datetime.now()
+        notify([event for event in client.events(since=since, until=until, decode=True)])
 
 
 def main():
-    while True:
-        run()
-        print("Now sleeping for an hour")
-        time.sleep(60*60)
+    run()
 
 
 if __name__=="__main__":
