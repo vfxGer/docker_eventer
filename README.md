@@ -164,6 +164,60 @@ You can see this in the docker-compose.yml file.
 
 And voila a docker event notifier. 
 
-Still to do:
-* make it more configurable
-* make it send notification on the first event and not just once an hour
+## Update, now streaming
+A comment on [reddit](https://www.reddit.com/r/Python/comments/7bx7qe/an_explanation_and_code_of_a_python_script_to/dpm39e5/) said:
+> Though preferably it would be rather when an event happens than just polling for it.
+And I agree but I still did not want to be bombarded with e-mails so here's what I came up with
+```python
+#!/usr/bin/env python3
+import time
+from collections import Counter
+from pprint import pformat
+import datetime
+
+import docker
+
+import notifier
+
+MAX_NOTIFY_TIME = 60
+
+
+def notify(events):
+    message = ""
+    message += "\n%d events\n" % len(events)
+    message += pformat(Counter(row['Action'] for row in events))
+    message += "\n"
+    message += pformat(events)
+    subject = "[DOCKER_EVNETS] %d docker events\n" % len(events)
+    print("Sending e-mail %s", subject)
+    notifier.notify(message, subject)
+
+
+def run():
+    client = docker.from_env()
+    while True:
+        for event in client.events(decode=True):
+            notify([event])
+            break
+        since = datetime.datetime.now()
+        # Do not want to bombard the e-mailer with messages so sleeping
+        print("Sleeping for %d seconds" % MAX_NOTIFY_TIME)
+        time.sleep(MAX_NOTIFY_TIME)
+        print("Woke")
+        until = datetime.datetime.now()
+        notify([event for event in client.events(since=since, until=until, decode=True)])
+
+
+def main():
+    run()
+
+
+if __name__=="__main__":
+    main()
+
+```
+It is a simple solution, it gets the first event, e-mails about it and then sleeps. After the program stops sleeping it gets all the events that happened while it was sleeping and sends them and repeats.
+
+## Still to do:
+[]- make it more configurable
+[x]- make it send notification on the first event and not just once an hour
