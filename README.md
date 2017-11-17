@@ -169,6 +169,7 @@ And voila a docker event notifier.
 ## Update, now streaming
 A comment on [reddit](https://www.reddit.com/r/Python/comments/7bx7qe/an_explanation_and_code_of_a_python_script_to/dpm39e5/) said:
 > Though preferably it would be rather when an event happens than just polling for it.
+
 And I agree but I still did not want to be bombarded with e-mails so here's what I came up with
 ```python
 #!/usr/bin/env python3
