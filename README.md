@@ -219,5 +219,5 @@ if __name__=="__main__":
 It is a simple solution, it gets the first event, e-mails about it and then sleeps. After the program stops sleeping it gets all the events that happened while it was sleeping and sends them and repeats.
 
 ## Still to do:
-[]- make it more configurable
-[x]- make it send notification on the first event and not just once an hour
+- [ ] make it more configurable
+- [x] make it send notification on the first event and not just once an hour
