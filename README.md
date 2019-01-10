@@ -224,3 +224,5 @@ It is a simple solution, it gets the first event, e-mails about it and then slee
 ## Still to do:
 - [ ] make it more configurable
 - [x] make it send notification on the first event and not just once an hour
+
+Test
